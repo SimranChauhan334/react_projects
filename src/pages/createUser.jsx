@@ -19,6 +19,7 @@ function Createuser(){
   const handleSubmit = async(e)=>{
     e.preventDefault();
     
+    
     const formData = {
       username,
       first_name,
@@ -31,16 +32,22 @@ function Createuser(){
       }
     }
 
+    const token = localStorage.getItem('access_token');
+
     const response = await fetch('http://localhost:8000/api/usercreate/',{
       method : 'POST',
       headers:{
-        'Content-Type' : 'application/json', 
+        'Content-Type' : 'application/json',
+        // 'Authorization': `Bearer ${token}`
+
+
       },
       body : JSON.stringify(formData),
     })
     if (response.ok) {
       const result = await response.json();
-      // alert("user created successfully")
+
+      alert("user created successfully")
       navigate('/login')
 
 

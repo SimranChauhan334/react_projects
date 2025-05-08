@@ -8,7 +8,7 @@ import Navbar from "./components/Navbar";
 import Subcategory from "./pages/subcategory";
 import Product from './pages/Product';
 import ProductDetail from "./pages/ProductDetail";
-import Createuser from "./pages/createuser";
+import Createuser from "./pages/createUser";
 import Createcategory from "./pages/CreateCategory";
 import Login from "./pages/Login";
 

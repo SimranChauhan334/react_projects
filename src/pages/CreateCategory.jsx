@@ -3,12 +3,14 @@
 
 import { useState, useEffect } from 'react';
 import "/src/components/category.css";
+import { useNavigate } from "react-router-dom"
 
 
 
 function Createcategory() {
     const [cat_name, setCatName] = useState('');
     const [cat_image, setCatImage] = useState();
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,13 +19,24 @@ function Createcategory() {
         formData.append('name', cat_name);
         formData.append('image', cat_image);
 
+        const token = localStorage.getItem('access_token')
+
+        if (!token) {
+            alert("Please login first.");
+            return;
+        }
+
         const response = await fetch('http://localhost:8000/api/category/', {
             method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
             body: formData,
         });
 
         if (response.ok) {
-            alert('Category created successfully');
+            // alert('Category created successfully');
+            navigate("/")
             setCatName('');
             setCatImage(null);
         } else {

@@ -34,7 +34,7 @@ const Category = () => {
 
   return (
     <>
-      <h1 className="cat">Category</h1>
+      {/* <h1 className="cat">Category</h1> */}
       <div className="category-container"> 
         {categories.map((category, index) => (
           <div className="category-item" key={category.id || index}>

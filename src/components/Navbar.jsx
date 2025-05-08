@@ -3,9 +3,17 @@
 
 import { Link } from 'react-router-dom';
 import './Navbar.css'; 
+import { useEffect } from 'react';
 
 
 function Navbar() {
+
+  const logout = () => {
+    
+    localStorage.removeItem('access_token')
+  }
+
+
   return (
     <nav className="navbar">
       <div className="logo">Clothing-Store</div>
@@ -16,7 +24,11 @@ function Navbar() {
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
         <Link to="/createuser">Create user</Link>
-        <Link to="/login">Login</Link>
+        {
+          localStorage.getItem('access_token')?
+          <Link onClick={()=>logout()}>Logout</Link>:
+          <Link to={'/login'}>Login</Link>
+        }
       </div>
     </nav>
   );
