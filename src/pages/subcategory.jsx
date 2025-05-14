@@ -41,6 +41,14 @@ const Subcategory = () => {
 
     return (
       <>
+
+          <div style={{ marginBottom: "20px" }}>
+              <Link to={`/create-Sub-cat/${id}`}>
+                  <button style={{ padding: "10px 20px", fontSize: "16px" }}>
+                      Add Subcategory 
+                  </button>
+              </Link>
+          </div>
         
           <div className="category-container">  
             {subcategories.map((subcategory, index) => (
@@ -65,3 +73,4 @@ const Subcategory = () => {
 };
 
 export default Subcategory;
+

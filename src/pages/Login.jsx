@@ -38,6 +38,7 @@ function Login (){
       const { access } = result;
 
       localStorage.setItem('access_token', access);
+      // window.dispatchEvent(new Event('authChange'));
       alert("Login successful")
       navigate('/');
 

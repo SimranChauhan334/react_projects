@@ -9,7 +9,19 @@
     margin-top: 40px;
   }
   
+  .category-item {
+    position: relative;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    width: 250px;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem; 
+    transition: transform 0.3s ease-in-out;
+  }
   
+/*   
   .category-item {
     background-color: #f4f4f4;
     border-radius: 8px;
@@ -19,7 +31,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 1.5rem; 
     transition: transform 0.3s ease-in-out;  
-  }
+  } */
   
   
   .category-item:hover {
@@ -54,5 +66,19 @@
     color: #007bff;
   }
 
+  .edit-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    background-color: rgb(132, 124, 124);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+  }
   
   

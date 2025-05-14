@@ -11,6 +11,9 @@ import ProductDetail from "./pages/ProductDetail";
 import Createuser from "./pages/createUser";
 import Createcategory from "./pages/CreateCategory";
 import Login from "./pages/Login";
+import EditCategory from "./pages/EditCategory";
+import Add_Subcategory from "./pages/Add_Subcategory";
+import Add_Product from "./pages/Add_Product"
 
 
 function App() {
@@ -25,14 +28,10 @@ function App() {
         <Route path="/product_detail/:id/" element={<ProductDetail />} /> 
         <Route path="/createuser/" element={<Createuser />} /> 
         <Route path="/createcategory/" element={<Createcategory />} /> 
-        <Route path="/login/" element={<Login />} />
-
-        
-    
-        
-
-        
-        
+        <Route path="/login/" element={<Login />} />   
+        <Route path="/edit-category/:id" element={<EditCategory />} />  
+        <Route path="/create-Sub-cat/:id" element={<Add_Subcategory />} />
+        <Route path="/add-product/:id" element={<Add_Product />} />
        
       </Routes>
     </BrowserRouter>

@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom"
 
 function Createcategory() {
     const [cat_name, setCatName] = useState('');
-    const [cat_image, setCatImage] = useState();
+    const [cat_image, setCatImage] = useState('');
+    // const [isVendor, setIsVendor] = useState(false);  //extra//
     const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
@@ -70,3 +71,4 @@ function Createcategory() {
 }
 
 export default Createcategory;
+
