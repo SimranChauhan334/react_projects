@@ -22,7 +22,7 @@ function Navbar() {
       </div>
 
         <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
+        <Link to="/profile">Profile</Link>
         {/* <Link to="createcategory">create category</Link> */}
         <Link to="/createuser">Create user</Link>
         {

@@ -3,7 +3,7 @@
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import About from "./pages/About";
+// import About from "./pages/About";
 import Navbar from "./components/Navbar";
 import Subcategory from "./pages/subcategory";
 import Product from './pages/Product';
@@ -14,6 +14,9 @@ import Login from "./pages/Login";
 import EditCategory from "./pages/EditCategory";
 import Add_Subcategory from "./pages/Add_Subcategory";
 import Add_Product from "./pages/Add_Product"
+import Add_to_cart from "./pages/Add_to_cart";
+import Buy_Now from "./pages/Buy_Now";
+import Profile from "./pages/profile"
 
 
 function App() {
@@ -22,7 +25,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        {/* <Route path="/about" element={<About />} /> */}
         <Route path="/subcategory/:id" element={<Subcategory/>}/>
         <Route path="/product/:id/" element={<Product />} />
         <Route path="/product_detail/:id/" element={<ProductDetail />} /> 
@@ -32,6 +35,9 @@ function App() {
         <Route path="/edit-category/:id" element={<EditCategory />} />  
         <Route path="/create-Sub-cat/:id" element={<Add_Subcategory />} />
         <Route path="/add-product/:id" element={<Add_Product />} />
+        <Route path="/cart-details/" element={<Add_to_cart />} />
+        <Route path="/buy-now/:productId" element={<Buy_Now />} />
+        <Route path="/profile/" element={<Profile />} />
        
       </Routes>
     </BrowserRouter>
