@@ -8,7 +8,8 @@
 //   const [product, setProduct] = useState(null);
 //   const [mainImage, setMainImage] = useState('');
 //   const [cartItem, setCartItem] = useState(null);
-//   const [quantity, setQuantity] = useState('');
+//   const [quantity, setQuantity] = useState(1);
+//   const [showQuantitySelector, setShowQuantitySelector] = useState(false);
 
 //   const [user, setUser] = useState(null);
 
@@ -27,8 +28,36 @@
 //     setMainImage(imageUrl);
 //   };
 
-//   const handleAddToCart = () => {
-//     console.log("Add to cart:", product.id);
+//   const handleAddToCart = async () => {
+//     // console.log("Add to cart:", product.id);
+//     const token = localStorage.getItem("access_token")
+
+//     if(!token){
+//       alert("you must be login ")
+//       return
+//     }
+//     const res = await fetch("http://127.0.0.1:8000/api/cart/",{
+//       method : "POST",
+//       headers : {
+//         "Content-Type": "application/json",
+//          Authorization: `Bearer ${token}`,
+//       },
+//       body : JSON.stringify({
+//         product: product.id,
+//         quantity: quantity || 1,
+//       })
+
+//     })
+//     const data = await res.json(); 
+//     if (res.ok){
+//       alert("Product added to cart!")
+//       setCartItem(data)
+//       setShowQuantitySelector(false)
+
+//     }else{
+//       alert(data.detail || "Failed to add to cart.");
+//       // console.error("Add to cart error:", data);
+//     }
    
 //   };
 
@@ -107,6 +136,7 @@
 
 // export default ProductDetail;
 
+
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import '../components/ProductDetail.css';
@@ -115,7 +145,9 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [mainImage, setMainImage] = useState('');
-  const [cartItem, setCartItem] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [isInCart, setIsInCart] = useState(false);
+  const [showQuantitySelector, setShowQuantitySelector] = useState(false);
 
   const fetchProduct = async () => {
     const res = await fetch(`http://127.0.0.1:8000/api/products/${id}/`);
@@ -124,41 +156,67 @@ const ProductDetail = () => {
     setMainImage(data.images[0]?.image);
   };
 
+  const checkIfInCart = async (productId) => {
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+
+    const res = await fetch("http://127.0.0.1:8000/api/cart/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      // console.log("Cart Items:", data)
+      const exists = data.results.some(item => item.product.id === productId);
+      
+
+      setIsInCart(exists);
+    }
+  };
+
   useEffect(() => {
     fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    if (product) {
+      checkIfInCart(product.id);
+    }
+  }, [product]);
 
   const handleThumbnailClick = (imageUrl) => {
     setMainImage(imageUrl);
   };
 
   const handleAddToCart = async () => {
-    try {
-      const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      alert("You must be logged in.");
+      return;
+    }
 
-      console.log(token)
-      const res = await fetch("http://127.0.0.1:8000/api/cart/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+    const res = await fetch("http://127.0.0.1:8000/api/cart/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        product: product.id,
+        quantity: quantity || 1,
+      }),
+    });
 
-          product: product.id,
-          quantity: 1,
-        }),
-      });
+    const data = await res.json();
 
-      if (res.ok) {
-        const data = await res.json();
-        console.log("Added to cart:", data);
-        setCartItem(data);
-      } else {
-        console.error("Failed to add to cart");
-      }
-    } catch (error) {
-      console.error("Error:", error);
+    if (res.ok) {
+      alert("Product added to cart!");
+      setIsInCart(true)
+      setShowQuantitySelector(false);
+    } else {
+      alert(data.detail || "Failed to add to cart.");
     }
   };
 
@@ -200,22 +258,37 @@ const ProductDetail = () => {
         <p>Material: {product.material}</p>
         <p className="product-stock">Stock: {product.stock}</p>
 
-      
         {product.stock === 0 ? (
           <p style={{ color: 'red', fontWeight: 'bold', marginTop: '10px' }}>
             Product is out of stock
           </p>
         ) : (
-          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-            {cartItem ? (
-              <Link to="/cart">
+          <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {isInCart ? (
+              <Link to="/cart-details">
                 <button>View Cart</button>
               </Link>
+            ) : showQuantitySelector ? (
+              <>
+                <label htmlFor="quantity">Select Quantity:</label>
+                <select
+                  id="quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  style={{ width: '100px' }}
+                >
+                  {[...Array(product.stock).keys()].map(i => (
+                    <option key={i + 1} value={i + 1}>{i + 1}</option>
+                  ))}
+                </select>
+                <button onClick={handleAddToCart}>Confirm Add to Cart</button>
+              </>
             ) : (
-              <button onClick={handleAddToCart}>Add to Cart</button>
+              <button onClick={() => setShowQuantitySelector(true)}>Add to Cart</button>
             )}
+
             <Link to={`/buy-now/${product.id}`}>
-              <button className="buy-now">Buy now</button>
+              <button className="buy-now">Buy Now</button>
             </Link>
           </div>
         )}

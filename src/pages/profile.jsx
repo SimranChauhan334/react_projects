@@ -13,7 +13,7 @@ const Profile = () => {
       const token = localStorage.getItem("access_token")
       if (!token) {
         setError("You must be logged in.")
-        setLoading(false);
+        setLoading(false)
         return;
       }
 

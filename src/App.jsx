@@ -14,9 +14,10 @@ import Login from "./pages/Login";
 import EditCategory from "./pages/EditCategory";
 import Add_Subcategory from "./pages/Add_Subcategory";
 import Add_Product from "./pages/Add_Product"
-import Add_to_cart from "./pages/Add_to_cart";
+import Cart from "./pages/Add_to_cart";
 import Buy_Now from "./pages/Buy_Now";
 import Profile from "./pages/profile"
+import Order from "./pages/Order";
 
 
 function App() {
@@ -35,9 +36,10 @@ function App() {
         <Route path="/edit-category/:id" element={<EditCategory />} />  
         <Route path="/create-Sub-cat/:id" element={<Add_Subcategory />} />
         <Route path="/add-product/:id" element={<Add_Product />} />
-        <Route path="/cart-details/" element={<Add_to_cart />} />
+        <Route path="/cart-details/" element={<Cart />} />
         <Route path="/buy-now/:productId" element={<Buy_Now />} />
         <Route path="/profile/" element={<Profile />} />
+        <Route path="/order-history/" element={<Order />} />
        
       </Routes>
     </BrowserRouter>
