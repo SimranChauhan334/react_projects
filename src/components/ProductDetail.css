@@ -106,4 +106,24 @@
       height: 60px; 
     }
   }
-  
+  .reviews-section {
+  max-width: 1200px;
+  margin: 40px auto;
+  background-color: #fdfdfd;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+.reviews-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.review-item {
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 15px;
+}
