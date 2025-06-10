@@ -18,6 +18,8 @@ import Cart from "./pages/Add_to_cart";
 import Buy_Now from "./pages/Buy_Now";
 import Profile from "./pages/profile"
 import Order from "./pages/Order";
+import SearchProduct from "./pages/SearchProduct"
+import EditProduct from "./pages/EditProduct";
 
 
 function App() {
@@ -25,7 +27,7 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} /> 
         {/* <Route path="/about" element={<About />} /> */}
         <Route path="/subcategory/:id" element={<Subcategory/>}/>
         <Route path="/product/:id/" element={<Product />} />
@@ -40,6 +42,8 @@ function App() {
         <Route path="/buy-now/:productId" element={<Buy_Now />} />
         <Route path="/profile/" element={<Profile />} />
         <Route path="/order-history/" element={<Order />} />
+        <Route path="/search/" element={<SearchProduct />} />
+        <Route path="/edit-product/:id" element={<EditProduct />} /> 
        
       </Routes>
     </BrowserRouter>

@@ -11,6 +11,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "../components/category.css";
+import '@fortawesome/fontawesome-free/css/all.min.css'
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -27,7 +28,7 @@ const Category = () => {
   };
 
   const fetchUserData = async () => {
-    const accessToken = localStorage.getItem("access_token");
+    const accessToken = localStorage.getItem("access_token")
     if (!accessToken) {
       console.error("No access token found in localStorage");
       return;
@@ -56,6 +57,13 @@ const Category = () => {
 
   return (
     <>
+    {/* Cart Icon */}
+      <div style={{ position: 'fixed', top: '20px', right: '30px', zIndex: 1000 }}>
+        <Link to="/cart-details">
+          <i className="fas fa-cart-shopping" style={{ fontSize: '24px', color: 'black' }}></i>
+        </Link>
+
+      </div>
       
       {user?.is_vendor && (
         <div className="add-category-button">

@@ -12,6 +12,7 @@ function Navbar() {
     
     localStorage.removeItem('access_token')
   }
+  
 
   return (
     <nav className="navbar">
@@ -23,14 +24,17 @@ function Navbar() {
 
         <Link to="/">Home</Link>
         <Link to="/profile">Profile</Link>
+        
         {/* <Link to="createcategory">create category</Link> */}
         <Link to="/createuser">Create user</Link>
         {
           localStorage.getItem('access_token')?
           <Link onClick={()=>logout()}>Logout</Link>:
           <Link to={'/login'}>Login</Link>
+        
         }
       </div>
+      
     </nav>
   );
 }

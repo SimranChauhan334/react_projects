@@ -1,41 +1,52 @@
 
 
-import { useState, useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
-import "../components/ProductDetail.css"
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import "../components/ProductDetail.css";
 
 const ProductDetail = () => {
-  const { id } = useParams()
-  const [product, setProduct] = useState(null)
-  const [mainImage, setMainImage] = useState("")
-  const [quantity, setQuantity] = useState(1)
-  const [isInCart, setIsInCart] = useState(false)
-  const [showQuantitySelector, setShowQuantitySelector] = useState(false)
-  const [reviews, setReviews] = useState([])
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [mainImage, setMainImage] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [isInCart, setIsInCart] = useState(false);
+  const [showQuantitySelector, setShowQuantitySelector] = useState(false);
+  const [reviews, setReviews] = useState([]);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(1);
-  
-
-  // const [addreviews, setaddreviews] = useState()
+  const [currentUser, setCurrentUser] = useState(null);
 
   const fetchProduct = async () => {
-    const res = await fetch(`http://127.0.0.1:8000/api/products/${id}/`)
-    const data = await res.json()
+    const res = await fetch(`http://127.0.0.1:8000/api/products/${id}/`);
+    const data = await res.json();
     setProduct(data);
-    setMainImage(data.images[0]?.image)
+    setMainImage(data.images[0]?.image);
   };
 
   const fetchReviews = async () => {
-    const res = await fetch(`http://127.0.0.1:8000/api/product/${id}/reviews/`)
-    const data = await res.json()
-    setReviews(data)
-  }
+    const res = await fetch(`http://127.0.0.1:8000/api/product/${id}/reviews/`);
+    const data = await res.json();
+    setReviews(data);
+  };
 
+  const fetchCurrentUser = async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+    const res = await fetch("http://127.0.0.1:8000/api/user/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setCurrentUser(data);
+    }
+  };
 
   const checkIfInCart = async () => {
     const token = localStorage.getItem("access_token");
-    if (!token) return
+    if (!token) return;
 
     const res = await fetch("http://127.0.0.1:8000/api/cart/", {
       headers: {
@@ -44,7 +55,7 @@ const ProductDetail = () => {
     });
 
     if (res.ok) {
-      const data = await res.json()
+      const data = await res.json();
       const exists = data.results.some(
         (item) => item.product && product && item.product.id === product.id
       );
@@ -52,24 +63,24 @@ const ProductDetail = () => {
     } else {
       console.error("Cart check failed:", await res.text());
     }
-  }
-
+  };
 
   useEffect(() => {
-    fetchProduct()
-    fetchReviews()
+    fetchProduct();
+    fetchReviews();
+    fetchCurrentUser();
   }, [id]);
 
   useEffect(() => {
     if (product) {
-      checkIfInCart()
+      checkIfInCart();
     }
-  }, [product])
+  }, [product]);
 
   const handleAddToCart = async () => {
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem("access_token");
     if (!token) {
-      alert("You must be logged in")
+      alert("You must be logged in");
       return;
     }
 
@@ -93,44 +104,100 @@ const ProductDetail = () => {
     } else {
       alert(data.detail || "Failed to add to cart.");
     }
-  }
+  };
 
   const handleAddReview = async () => {
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem("access_token");
     if (!token) {
-      alert("you must be login")
-      return
+      alert("You must be logged in");
+      return;
     }
-    const res = await fetch(`http://127.0.0.1:8000/api/product/${id}/reviews/`,{
-      method : "POST",
-      headers : {
-        "content-type" : "application/json",
-        Authorization : `Bearer ${token}`,
+
+    const res = await fetch(`http://127.0.0.1:8000/api/product/${id}/reviews/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body : JSON.stringify({
-        product: id, 
+      body: JSON.stringify({
+        product: id,
         review_text: reviewText,
-        rating : reviewRating,
-      })
-    })
+        rating: reviewRating,
+      }),
+    });
 
     if (res.ok) {
-      alert("review submitted")
-      setShowReviewForm(false)
-      setReviewText()
-      setReviewRating(1)
-    }else{
-      const errorData = await res.json()
-      alert(errorData.detail || "review not submitted");
-      
+      alert("Review submitted");
+      setShowReviewForm(false);
+      setReviewText("");
+      setReviewRating(1);
+      fetchReviews();
+    } else {
+      const errorData = await res.json();
+      alert(errorData.detail || "Review not submitted");
     }
-  }
+  };
+
+  const handleEditReview = async (review) => {
+    const newText = prompt("Edit your review:", review.review_text);
+    const newRating = prompt("Edit your rating (1-5):", review.rating);
+    
+    if (!newText || !newRating) return;
+
+    const token = localStorage.getItem("access_token");
+
+    const res = await fetch(`http://127.0.0.1:8000/api/review/${review.id}/`, {
+      method: "PATCH",
+      
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        review_text: newText,
+        rating: Number(newRating),
+      }),
+    });
+
+    if (res.ok) {
+      alert("Review updated");
+      fetchReviews();
+    } else {
+      alert("Failed to update review");
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    console.log("Deleting review with ID:", reviewId);
+    const confirmDelete = window.confirm("Are you sure you want to delete this review?");
+    if (!confirmDelete) return;
+
+    const token = localStorage.getItem("access_token");
+
+    const res = await fetch(`http://127.0.0.1:8000/api/review/${reviewId}/`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      alert("Review deleted");
+      fetchReviews();
+    } else {
+      alert("Failed to delete review")
+    }
+  };
 
   const handleThumbnailClick = (img) => {
     setMainImage(img);
   };
 
   if (!product) return <p>Loading...</p>;
+  // console.log("currentUser:", currentUser);
+  // console.log("reviews:", reviews);
+  // console.log("review.user:", reviews.user);
+
 
   return (
     <>
@@ -196,20 +263,16 @@ const ProductDetail = () => {
                   Add to Cart
                 </button>
               )}
-
               <Link to={`/buy-now/${product.id}`}>
                 <button className="buy-now">Buy Now</button>
               </Link>
-              
             </div>
           )}
         </div>
       </div>
 
-      
       <div className="reviews-section">
         <h2>Customer Reviews</h2>
-        
         {reviews.length === 0 ? (
           <p>No reviews yet.</p>
         ) : (
@@ -219,46 +282,77 @@ const ProductDetail = () => {
                 <strong className="review-username">
                   {review.user?.username || "username"}
                 </strong>
-                
                 <p className="review-text">{review.review_text}</p>
-                <p className="review-rating">Rating: {review.rating} </p>
+                <p className="review-rating">Rating: {review.rating}</p>
+
+                {review.user?.id === currentUser?.id && (
+                  
+                  <>
+                  
+
+                    <button onClick={() => handleEditReview(review)} className="edit-review">
+                      Edit
+                    </button>
+                    <button onClick={() => handleDeleteReview(review.id)} className="delete-review">
+                      Delete
+                    </button>
+                  </>
+                )}
+
+
+                {/* {currentUser?.id === review.user?.id && (
+                  <>
+                    <button onClick={() => handleEditReview(review)} className="edit-review">
+                      Edit
+                    </button>
+                    <button onClick={() => handleDeleteReview(review.id)} className="delete-review">
+                      Delete
+                    </button>
+                  </>
+                )} */}
               </li>
             ))}
-            
           </ul>
+        )}
+        {currentUser && (
+          
+          <button
+            className="add-reviews"
+            onClick={() => setShowReviewForm(!showReviewForm)}
+          >
+            {showReviewForm ? "Cancel" : "Add Review"}
+          </button>
           
         )}
-
-        <button className="add-reviews" onClick={() => setShowReviewForm(!showReviewForm)}>
-          {showReviewForm ? "Cancel" : "Add Review"}
-        </button>
         
+
+        {/* <button className="add-reviews" onClick={() => setShowReviewForm(!showReviewForm)}>
+          {showReviewForm ? "Cancel" : "Add Review"}
+        </button> */}
+
         {showReviewForm && (
           <div className="review-form">
             <textarea
-              placeholder="Write your review...."
+              placeholder="Write your review..."
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
-              raws = "4"
+              rows="4"
               cols="50"
             />
             <br />
-
             <label>Rating:</label>
-            <select value={reviewRating} onChange={(e) => setReviewRating(Number(e.target.value))}>
-              {[1,2,3,4,5].map((val) => (
+            <select
+              value={reviewRating}
+              onChange={(e) => setReviewRating(Number(e.target.value))}
+            >
+              {[1, 2, 3, 4, 5].map((val) => (
                 <option key={val} value={val}>
                   {val}
                 </option>
               ))}
             </select>
             <br />
-
             <button onClick={handleAddReview}>Submit Review</button>
-            
-            
-
-
           </div>
         )}
       </div>

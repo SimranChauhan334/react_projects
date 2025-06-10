@@ -2,11 +2,13 @@
 
 
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -38,7 +40,11 @@ const Profile = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [])
+  const handleHistoryClick = () => {
+    
+    navigate("/order-history"); 
+  };
 
   if (loading) return <p>Loading your profile...</p>
   if (error) return <p>Error: {error}</p>
@@ -52,6 +58,12 @@ const Profile = () => {
       <p><strong>Email:</strong> {user.email}</p>
       <p><strong>Phone Number:</strong>{user.phone_no}</p>
       <p><strong>Staus:</strong> {user.is_vendor ? "Vendor" : "User"}</p>
+      <button 
+        onClick={handleHistoryClick} 
+        style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}
+      >
+        History
+      </button>
       
     </div>
   )

@@ -78,7 +78,7 @@ function EditCategory() {
 
             <button type="submit">Update Category</button>
         </form>
-    );
+    )
 }
 
 export default EditCategory;
